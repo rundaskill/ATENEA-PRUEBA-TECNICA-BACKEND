@@ -30,7 +30,7 @@ import io.swagger.annotations.ApiResponses;
 @Api(tags = "FixedAssetController")
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/activos")
+@RequestMapping("/api/asset")
 public class FixedAssetController {
 	@Autowired
 	private FixedAssetService fixedAssetService;
@@ -48,7 +48,7 @@ public class FixedAssetController {
 			@ApiResponse(code = 404, message = "Activo no encontrado"),
 			@ApiResponse(code = 500, message = "Error interno del servidor") })
 	@PutMapping("/{id}")
-	public FixedAsset updateActivo(@PathVariable Long id, @RequestBody FixedAsset updatedAsset){
+	public FixedAsset updateAsset(@PathVariable Long id, @RequestBody FixedAsset updatedAsset){
 		return fixedAssetService.updateAsset(id, updatedAsset);
 	}
 	
@@ -57,7 +57,7 @@ public class FixedAssetController {
 			@ApiResponse(code = 400, message = "Datos faltantes al crear el activo"),
 			@ApiResponse(code = 500, message = "Error interno del servidor") })
 	@PostMapping
-	public ResponseEntity<FixedAsset> createActivo(@RequestBody FixedAsset asset) {
+	public ResponseEntity<FixedAsset> createAsset(@RequestBody FixedAsset asset) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(fixedAssetService.createAsset(asset));
 	}
 	
@@ -68,7 +68,7 @@ public class FixedAssetController {
 			@ApiResponse(code = 500, message = "Error interno del servidor") })
 	
 	@GetMapping("/buscar")
-	public ResponseEntity<Object> buscarActivosPorParametros(
+	public ResponseEntity<Object> findByTypeOrPurchaseDateOrSerial(
 			@RequestParam(required = false) FixedAsset.TypeAsset type,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date purchaseDate,
 			@RequestParam(required = false) String serial) {
@@ -77,11 +77,10 @@ public class FixedAssetController {
 			Instant instant = purchaseDate.toInstant();
 			purchaseDate = Date.from(instant.atZone(ZoneId.of("UTC")).toInstant());
 		}
-		// Lógica para realizar la búsqueda basada en los parámetros recibidos
+		
 	    List<FixedAsset> activos = fixedAssetService.findByTypeOrPurchaseDateOrSerial(type, purchaseDate, serial);
 
 	    if (activos.isEmpty()) {
-	        // Devolver respuesta con código de estado 404 y un mensaje personalizado
 	        ApiResponseMessage responseMessage = new ApiResponseMessage(404, "No se encontraron activos");
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
 	    }

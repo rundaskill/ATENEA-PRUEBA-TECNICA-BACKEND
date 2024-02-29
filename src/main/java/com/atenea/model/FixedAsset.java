@@ -121,6 +121,7 @@ public class FixedAsset {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 
 
 	
